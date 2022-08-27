@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        class Dado{
+            constructor(caras){
+                this.caras = caras;
+            }
+            lanzar(){
+               return Math.floor(Math.random() * this.caras) + 1
+            }
+        }
+        class Corredor{
+            constructor(num, dado){
+                this.num = num;
+                this.posicion = 0;
+                this.dado = dado;
+            }
+            info (){
+                console.log(`el corredor ${this.num} está en la posicion ${this.posicion}`);
+            }
+            // avanzar(){
+                
+            //     let tirada = this.dado.lanzar();
+            //     if (tirada == 4 || tirada == 5 || tirada == 6){
+            //         this.posicion += 2;
+            //     }
+            //     else if (tirada == 2 || tirada == 3){
+            //         this.posicion += 1;
+            //     }
+            //     else{
+            //         this.posicion += 3;
+            //     }
+            //     return this.posicion;
+            
+            // }
+        
+        }
+        class Animal extends Corredor{
+            constructor (num, dado, tipo){
+                super(num, dado);
+                this.tipo = tipo;
+            }
+            avanzar(){
+                let tirada = this.dado.lanzar();
+                 switch (this.tipo) {
+                    case 1:
+                    case "conejo":
+                        this.tipo = "conejo";
+                        if(tirada <= 2){
+                            this.posicion -= 12;
+                        }
+                        else if(tirada <= 5){
+                            this.posicion -= 2;
+                        }
+                        else if(tirada > 9 && tirada <= 16){
+                            this.posicion++;
+                        }
+                        else if(tirada > 16 && tirada <=20){
+                            this.posicion += 9;
+                        }
+                        break;
+                    case 2:
+                    case "tortuga":
+                        this.tipo = "tortuga";
+                        if(tirada <= 2){
+                            this.posicion -=6;
+                        }
+                        else if(tirada <= 5){
+                            this.posicion++
+                        }
+                        else{
+                            this.posicion += 6;
+                        }
+                        break;
+                    default:
+                        break;
+                 }
+                 return this.posicion
+
+            }
+        }
+        const liebre = new Animal(1, new Dado(20), 1);
+        const tortuga = new Animal(2, new Dado(10), 2);
+        while(liebre.posicion <= 100 && tortuga.posicion <= 100){
+            liebre.avanzar();
+            liebre.info();
+            tortuga.avanzar();
+            tortuga.info();
+            if(liebre.posicion >=100 && tortuga.posicion >= 100){
+                console.log("Empate");
+            }
+            else if(liebre.posicion >= 100){
+                console.log(`corredor ${liebre.tipo} gana`);
+            }else {
+                console.log(`corredor ${tortuga.tipo} gana`);
+            }
+        }
+
+    </script>
+</body>
+</html>
