@@ -9,18 +9,17 @@
 <body>
     <script>
         let registroPrimos = [0,1]; //primos who are truly primos
-        let primos = []; //which numbers are primos
+        let primos = []; //which numbers are the primos
         for (let i = 1; i < 1000; i++){
-            registroPrimos[i] = 1;
+            registroPrimos[i] = 1; //setting all numbers as primos
         }
         for(let i = 1, j = 2; i < 1000; i++, j++){
-            if(registroPrimos[i] == 1){
-                primos.push(j)
-                
+            if(registroPrimos[i] == 1){ 
+                primos.push(j) // set number "j" as primo
             }
-            for(let ii = i, jj = j; ii < 1000; ii++, jj++){
+            for(let ii = i, jj = j; ii < 1000; ii++, jj++){ //analize if number "jj" is multiple of primo
                 for(let iii = 0; iii < primos.length; iii++){
-                    if (jj % primos[iii] == 0 && j != primos[iii]){
+                    if (jj % primos[iii] == 0 && j != primos[iii]){ //set number "jj" as not primo
                         registroPrimos[ii] = 0;
                     }
                 }
