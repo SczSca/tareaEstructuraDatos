@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Productos</h1>
+    <label for="name">Name</label> <br>
+    <input type="text" id="name"> <br>
+    <label for="costo">costo</label> <br>
+    <input type="number" id="costo"> <br>
+    <label for="cantidad">cantidad</label><br>
+    <input type="number" id="cantidad"> <br>
+    <label for="posicion">posicion **OPCIONAL***</label><br>
+    <input type="number" id="posicion"> <br>
+    <button class="bttn" id="add" onclick="inventario.addProducto()">Add</button> <br>
+    <input type="text" id="search" onkeyup="inventario.searchProducto()" placeholder="Search for id...">
+    <ul id="line"></ul>
+    <script>
+        let id = 0;
+        class Producto{
+            constructor(name, costo, cantidad){
+                this.name= name;
+                this.costo = costo;
+                this.cantidad = cantidad;
+            }
+        }
+        class Inventario {
+            constructor(){
+                this.productos= [];
+            }
+            addProducto(){
+                let namae = document.getElementById("name").value;
+                let cost = document.getElementById("costo").value;
+                let cant = document.getElementById("cantidad").value;
+                let pos = (document.getElementById("posicion").value - 1);
+                if(!!namae && !!cost && !!cant){ //introduce todos los valores importantes
+                    const producto = new Producto(namae, cost, cant);
+                    this.addToNIdProducto();
+                    this.showProducto();
+                }else{
+                    alert("Dato faltante");
+                }
+                
+                
+            }
+            addToNIdProducto(){
+                if(!!pos){ //mandar al ultimo si no introduce en input posicion
+                    this.productos.push(producto);
+                }else{
+                    for(let i = 0; i < (pos + 1) || i < this.productos.length; i++){ //se hace un ciclo al array
+                        if(i == pos){  //si se llega a la posicion solicitada
+                            let productoARecorrer = this.productos[i]; //toma el producto que ya estaba en esa posicion
+                            this.productos[i] = producto; //deja nuevo producto
+                            let aux = 1; //marcador para referir a que ya se introdujo el nuevo producto
+                        }else if(aux == 1 && this.productos[i]){ //si las siguientes posiciones tienen producto, hacer
+                            let productoARecorrer2 = this.productos[i]; //toma el producto que está en posicion
+                            this.productos[i] = productoARecorrer; //deja el producto de la posicion pasada
+                            productoARecorrer = productoARecorrer2;
+                        }
+                    }
+                }
+            }
+            deleteProducto(num){
+                if (confirm("Usted eliminará este Producto")){
+                    let tempProductos = [];
+                    let i = 0;
+                    for (i in this.productos){
+                        if (i!= num)tempProductos.push(this.productos[i]); //si no es el que se quiere eliminar, se pasa al temp
+                    }
+                    this.productos = tempProductos; //sobreescribe el temporal al original
+                    this.showProducto();
+                }
+            }
+            showProducto(){
+                let line = "";
+                let i = 0;
+                for(i in this.productos){ //imprime todos los productos
+                    line += `<div class = "show"> <li> <a> <b> Id :</b> ${Number(i) + 1}</a> <br>
+                        <b>Nombre :</b>${this.productos[i].name} <br>
+                    <b>Costo :</b>${this.productos[i].costo} <br>
+                    <b>Cantidad :</b> ${this.productos[i].cantidad}  <br>
+                    <button class= "bttn" onclick = "inventario.deleteProducto(${i})">Delete</button>
+                    </li></div>`
+                }
+                document.getElementById("line").innerHTML = line;
+            }
+            searchProducto(){
+                let txtValue, a;
+                let search = document.getElementById("search").value;
+                let ul = document.getElementById("line");
+                let li = ul.getElementsByTagName("li"); 
+                let div = document.getElementsByClassName("show");
+                for (let i = 0; i < li.length; i++) { //loopea todos los objetos y esconden los que no coinciden en la busqueda
+                    a = li[i].getElementsByTagName("a")[0].text;
+                    if (a.indexOf(search) > -1) {
+                        li[i].style.display = "";
+                        div[i].style.display = "";
+                    } else {
+                        li[i].style.display = "none";
+                        div[i].style.display = "none";
+                    }
+                }
+            }
+
+            
+        }
+        
+        const inventario = new Inventario();
+       
+    </script>
+</body>
+</html>
