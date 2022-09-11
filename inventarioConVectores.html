@@ -44,7 +44,7 @@
                 
             }
             addToNIdProducto(producto,pos){
-                pos--;
+                pos--; //iguala la posicion solicitada al numero del indice
                 if(!!this.productos[pos]){
                     for(let i = this.productos.length - 1; i >= pos; i--){
                         this.productos[i + 1] = this.productos[i];
@@ -81,7 +81,7 @@
                         <b>Cantidad :</b> ${this.productos[i].cantidad}
                         </li></div>`
                     }
-                    else{
+                    else{ //en caso de estar vacio, imprime la posicion como vacio
                         line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
                         <b>Nombre :</b>VACIO <br>
                         <b>Codigo :</b><a>VACIO</a> <br>
@@ -94,7 +94,7 @@
             }
             showProductoInverso(){
                 let line = "";
-                for(let i = this.productos.length - 1; i >= 0; i--){ //imprime todos los productos
+                for(let i = this.productos.length - 1; i >= 0; i--){ //imprime todos los productos desde el último
                     if(!!this.productos[i]){
                         line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
                         <b>Nombre :</b>${this.productos[i].name} <br>
@@ -116,7 +116,7 @@
             searchProducto(code){ 
                 let aux = 1;
                 let value;
-                for (let i = 0; i < this.productos.length; i++) { //loopea todos los objetos y esconden los que no coinciden en la busqueda
+                for (let i = 0; i < this.productos.length; i++) { //loopea todos los objetos y obtiene el producto con el codigo que se busca
                     if (this.productos[i].codigo == code) {
                         aux = 0;
                         value = this.productos[i];
@@ -149,11 +149,11 @@
                 }else{
                     alert("Dato faltante");
                 }
-        })
+        });
         const btnList = document.getElementById("list");
         btnList.addEventListener("click",()=>{
-            document.getElementById("line").innerHTML = inventario.showProducto();
-        })
+            document.getElementById("line").innerHTML = inventario.showProducto(); //imprime la variable line del metodo
+        });
         const btnSearch = document.getElementById("search");
         btnSearch.addEventListener("click", ()=>{
             let ul = document.getElementById("line");
@@ -188,7 +188,7 @@
                 }else{
                     alert("Dato faltante");
                 }
-        })
+        });
         
         // function save(){
         //     localStorage.setItem("inventario.productos",JSON.stringify(inventario.productos));
@@ -208,4 +208,3 @@
 
 
 
-<!-- let r=miInv.buscar(8) -->
