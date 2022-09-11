@@ -23,6 +23,7 @@
     <button id = "delete">Delete</button>
     <button id="search">Search</button>
     <button id="inverseList">Inverse List</button>
+    <button id="insert">Insert</button>
     <ul id="line"></ul>
     <script>
         class Producto{
@@ -43,6 +44,13 @@
                 
             }
             addToNIdProducto(producto,pos){
+                pos--;
+                if(!!this.productos[pos]){
+                    for(let i = this.productos.length - 1; i >= pos; i--){
+                        this.productos[i + 1] = this.productos[i];
+                    }
+                }
+                this.productos[pos] = producto;
                 
             }
             deleteProducto(code){
@@ -65,24 +73,43 @@
             showProducto(){
                 let line = "";
                 for(i in this.productos){ //imprime todos los productos
-                    line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
+                    if(!!this.productos[i]){
+                        line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
                         <b>Nombre :</b>${this.productos[i].name} <br>
                         <b>Codigo :</b><a>${this.productos[i].codigo}</a> <br>
                         <b>Costo :</b>${this.productos[i].costo} <br>
                         <b>Cantidad :</b> ${this.productos[i].cantidad}
-                    </li></div>`
+                        </li></div>`
+                    }
+                    else{
+                        line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
+                        <b>Nombre :</b>VACIO <br>
+                        <b>Codigo :</b><a>VACIO</a> <br>
+                        <b>Costo :</b>VACIO <br>
+                        <b>Cantidad :</b> VACIO
+                        </li></div>`
+                    }
                 }
                 return line;
             }
             showProductoInverso(){
                 let line = "";
                 for(let i = this.productos.length - 1; i >= 0; i--){ //imprime todos los productos
-                    line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
+                    if(!!this.productos[i]){
+                        line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
                         <b>Nombre :</b>${this.productos[i].name} <br>
                         <b>Codigo :</b><a>${this.productos[i].codigo}</a> <br>
                         <b>Costo :</b>${this.productos[i].costo} <br>
                         <b>Cantidad :</b> ${this.productos[i].cantidad}
-                    </li></div>`
+                        </li></div>`
+                    }else{
+                        line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
+                        <b>Nombre :</b>VACIO <br>
+                        <b>Codigo :</b><a>VACIO</a> <br>
+                        <b>Costo :</b>VACIO <br>
+                        <b>Cantidad :</b> VACIO
+                        </li></div>` 
+                    }
                 }
                 return line;
             }
@@ -104,7 +131,7 @@
             
         }
         const inventario = new Inventario();
-        load();
+        // load();
         let i = 0;
         
         let div = document.getElementsByClassName("show");
@@ -117,7 +144,7 @@
             if(!!name && !!code && !!costo && !!cantidad ){ //introduce todos los valores importantes
                     const producto = new Producto(name,code, costo, cantidad);
                     inventario.addProducto(producto);
-                    save();
+                    // save();
                     
                 }else{
                     alert("Dato faltante");
@@ -140,21 +167,37 @@
             let code = document.getElementById("code").value;
 
             inventario.deleteProducto(code);
-            save();
-        })
+            // save();
+        });
         const btnInverseList = document.getElementById("inverseList");
         btnInverseList.addEventListener("click", ()=>{
             document.getElementById("line").innerHTML = inventario.showProductoInverso();
+        });
+        const btnInsert = document.getElementById("insert");
+        btnInsert.addEventListener("click",()=>{
+            let name = document.getElementById("name").value;
+            let costo = document.getElementById("costo").value;
+            let cantidad = document.getElementById("cantidad").value;
+            let code = document.getElementById("code").value;
+            let posicion = document.getElementById("posicion").value;
+            if(!!name && !!code && !!costo && !!cantidad && !!posicion){ //introduce todos los valores importantes
+                    const producto = new Producto(name,code, costo, cantidad);
+                    inventario.addToNIdProducto(producto,posicion);
+                    // save();
+                    
+                }else{
+                    alert("Dato faltante");
+                }
         })
         
-        function save(){
-            localStorage.setItem("inventario.productos",JSON.stringify(inventario.productos));
-        }
-        function load(){
-            if(!!localStorage.getItem("inventario.productos")){
-                inventario.productos = JSON.parse(localStorage.getItem("inventario.productos"));
-            }
-        }
+        // function save(){
+        //     localStorage.setItem("inventario.productos",JSON.stringify(inventario.productos));
+        // }
+        // function load(){
+        //     if(!!localStorage.getItem("inventario.productos")){
+        //         inventario.productos = JSON.parse(localStorage.getItem("inventario.productos"));
+        //     }
+        // }
     </script>
 </body>
 </html>
