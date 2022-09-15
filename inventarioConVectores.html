@@ -44,7 +44,7 @@
                 
             }
             addToNIdProducto(producto,pos){
-                pos--; //iguala la posicion solicitada al numero del indice
+                pos--;
                 if(!!this.productos[pos]){
                     for(let i = this.productos.length - 1; i >= pos; i--){
                         this.productos[i + 1] = this.productos[i];
@@ -65,12 +65,13 @@
                     }
                     if(aux == 1){
                         this.productos.pop();
+                        return true;
                     }else{
-                        return console.log(`no existe que se quiere eliminar`)
+                        return false;
                     }
                 
             }
-            showProducto(){
+            showProductos(){
                 let line = "";
                 for(i in this.productos){ //imprime todos los productos
                     if(!!this.productos[i]){
@@ -81,7 +82,7 @@
                         <b>Cantidad :</b> ${this.productos[i].cantidad}
                         </li></div>`
                     }
-                    else{ //en caso de estar vacio, imprime la posicion como vacio
+                    else{
                         line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
                         <b>Nombre :</b>VACIO <br>
                         <b>Codigo :</b><a>VACIO</a> <br>
@@ -94,7 +95,7 @@
             }
             showProductoInverso(){
                 let line = "";
-                for(let i = this.productos.length - 1; i >= 0; i--){ //imprime todos los productos desde el último
+                for(let i = this.productos.length - 1; i >= 0; i--){ //imprime todos los productos
                     if(!!this.productos[i]){
                         line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
                         <b>Nombre :</b>${this.productos[i].name} <br>
@@ -116,12 +117,12 @@
             searchProducto(code){ 
                 let aux = 1;
                 let value;
-                for (let i = 0; i < this.productos.length; i++) { //loopea todos los objetos y obtiene el producto con el codigo que se busca
+                for (let i = 0; i < this.productos.length; i++) { //loopea todos los objetos y esconden los que no coinciden en la busqueda
                     if (this.productos[i].codigo == code) {
                         aux = 0;
-                        value = this.productos[i];
+                        value = this.productos[i]; //si se regresa un objeto en verdadero
                     } else if (aux == 1) {
-                        value = "no existe";
+                        value = null; //se regresa un null
 
                     }
                 }
@@ -133,7 +134,8 @@
         const inventario = new Inventario();
         // load();
         let i = 0;
-        
+        let costo = document.getElementById("costo");
+
         let div = document.getElementsByClassName("show");
         const btnAdd = document.getElementById("add");
         btnAdd.addEventListener("click", ()=>{
@@ -147,13 +149,13 @@
                     // save();
                     
                 }else{
-                    alert("Dato faltante");
+                    alert("Dato faltante"); //NO USAR ALERTS
                 }
-        });
+        })
         const btnList = document.getElementById("list");
         btnList.addEventListener("click",()=>{
-            document.getElementById("line").innerHTML = inventario.showProducto(); //imprime la variable line del metodo
-        });
+            document.getElementById("line").innerHTML = inventario.showProducto();
+        })
         const btnSearch = document.getElementById("search");
         btnSearch.addEventListener("click", ()=>{
             let ul = document.getElementById("line");
@@ -188,7 +190,7 @@
                 }else{
                     alert("Dato faltante");
                 }
-        });
+        })
         
         // function save(){
         //     localStorage.setItem("inventario.productos",JSON.stringify(inventario.productos));
@@ -201,7 +203,6 @@
     </script>
 </body>
 </html>
-
 
 
 
