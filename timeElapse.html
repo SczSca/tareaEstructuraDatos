@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script>
+    class Trabajador{
+        constructor(horaE, minutoE, segundoE, horaS,minutoS,segundoS){
+            this.horaEntrada = [horaE,minutoE,segundoE];
+            this.horaSalida = [horaS,minutoS,segundoS];
+            this.horasTrabajadas = [horaS - horaE,minutoS - minutoE, segundoS - segundoE];
+        }
+        horaDeTrabajo(){
+            let salida;
+            if(this.horasTrabajadas[2] < 0){
+                this.horasTrabajadas[2] +=60;
+                this.horasTrabajadas[1] -=1;
+            }
+            if(this.horasTrabajadas[1] < 0){
+                this.horasTrabajadas[1] +=60;
+                this.horasTrabajadas[0] -=1;
+            }
+            if(this.horasTrabajadas[0] < 0 || this.horasTrabajadas[1] < 0 || this.horasTrabajadas[2] < 0){
+                salida = null;
+            }else{
+                salida = this.horasTrabajadas;
+            }
+            return salida;
+        }
+        info(hora){
+            let texto;
+            if(hora == null){
+                texto = "HORA IMPOSIBLE";
+            }else{
+                texto = `trabajó ${hora[0]} horas, ${hora[1]} minutos y ${hora[2]} segundos`;
+            }
+                return texto;
+        }
+    }
+    const juan = new Trabajador(10,30,50,18,50,00);
+    const felipe = new Trabajador(13,30,55,10,30,50);
+    console.log(juan.info(juan.horaDeTrabajo()));
+    console.log(felipe.info(felipe.horaDeTrabajo()));
+    
+</script>
+</body>
+</html>
