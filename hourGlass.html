@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //OBTENER LA SUMA DE RELOJES DE ARENA MAS GRANDE
+        //RELOJES DE ARENA DENTRO DE ARRAY 2D 6x6
+
+    let array2D=[[0,-4,-6,0,-7,-6],
+                [-1,-2,-6,-8,-3,-1],
+                [-8,-4,-2,-8,-8,-6],
+                [-3,-1,-2,-5,-7,-4],
+                [-3,-5,-3,-6,-6,-6],
+                [-3,-6,0,-8,-6,-7]];
+    function hourglassSum(arr) {
+        // Write your code here
+        //Array donde se almacenaran las sumas de los relojes
+        let aux = [[0,0,0,0],
+                    [0,0,0,0],
+                    [0,0,0,0],
+                    [0,0,0,0]
+                    ];
+        let max = -64;
+        for(let i=0; i < 4;i++){
+            //suma a, b , c , e , f , g de los relojes
+            for(let j = 0; j < 4; j++){
+                aux[i][j] += arr[i][j] + arr[i][j+1] + arr[i][j+2];
+                aux[i][j] += arr[i+2][j] + arr[i+2][j+1] + arr[i+2][j+2];
+            } 
+            
+            //Suma d de los relojes de arena
+            for(let j = i+1, k = 1; k < 5; k++){
+                aux[i][k - 1] += arr[j][k];
+            } 
+        }
+        for(let i = 0; i < aux.length; i++){
+            for(let j = 0; j < aux[i].length; j++){
+            if(max < aux[i][j]){
+                max = aux[i][j];
+            } 
+            }
+        }
+        return max;
+    }
+    console.log(hourglassSum(array));
+    </script>
+</body>
+</html>
