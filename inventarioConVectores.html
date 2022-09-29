@@ -24,6 +24,7 @@
     <button id="search">Search</button>
     <button id="inverseList">Inverse List</button>
     <button id="insert">Insert</button>
+    <button id="test">Test</button>
     <ul id="line"></ul>
     <script>
         class Producto{
@@ -42,6 +43,30 @@
                 
                 this.productos.push(producto);
                 
+            }
+            rankForBSearch(key){
+                let lo = 0;
+                let hi = this.productos.length - 1;
+                let mid = 0;
+                let aux = [];
+                while(lo <= hi){
+                    mid = Math.floor(lo + (hi - lo) / 2);
+                    if(this.productos[mid].codigo > key){
+                        hi = mid - 1;
+                    }
+                    else if(this.productos[mid].codigo < key){
+                        lo = mid + 1;
+                    }
+                    else {
+                        aux =[mid,key,"ENCONTRADO"];
+                        return aux;
+                    }
+                }
+                aux = [mid,key];
+                return aux;
+            }
+            binarySearch(){
+
             }
             addToNIdProducto(producto,pos){
                 pos--;
@@ -132,11 +157,13 @@
             
         }
         const inventario = new Inventario();
-        // load();
+        load();
         let i = 0;
-        let costo = document.getElementById("costo");
-
-        let div = document.getElementsByClassName("show");
+        const btnTest = document.getElementById("test");
+        btnTest.addEventListener("click",()=>{
+            let code = document.getElementById("code").value;
+            console.log(inventario.rankForBSearch(code));
+        })
         const btnAdd = document.getElementById("add");
         btnAdd.addEventListener("click", ()=>{
             let name = document.getElementById("name").value;
@@ -146,7 +173,7 @@
             if(!!name && !!code && !!costo && !!cantidad ){ //introduce todos los valores importantes
                     const producto = new Producto(name,code, costo, cantidad);
                     inventario.addProducto(producto);
-                    // save();
+                    save();
                     
                 }else{
                     alert("Dato faltante"); //NO USAR ALERTS
@@ -154,7 +181,7 @@
         })
         const btnList = document.getElementById("list");
         btnList.addEventListener("click",()=>{
-            document.getElementById("line").innerHTML = inventario.showProducto();
+            document.getElementById("line").innerHTML = inventario.showProductos();
         })
         const btnSearch = document.getElementById("search");
         btnSearch.addEventListener("click", ()=>{
@@ -169,7 +196,7 @@
             let code = document.getElementById("code").value;
 
             inventario.deleteProducto(code);
-            // save();
+            save();
         });
         const btnInverseList = document.getElementById("inverseList");
         btnInverseList.addEventListener("click", ()=>{
@@ -185,25 +212,25 @@
             if(!!name && !!code && !!costo && !!cantidad && !!posicion){ //introduce todos los valores importantes
                     const producto = new Producto(name,code, costo, cantidad);
                     inventario.addToNIdProducto(producto,posicion);
-                    // save();
+                    save();
                     
                 }else{
                     alert("Dato faltante");
                 }
         })
         
-        // function save(){
-        //     localStorage.setItem("inventario.productos",JSON.stringify(inventario.productos));
-        // }
-        // function load(){
-        //     if(!!localStorage.getItem("inventario.productos")){
-        //         inventario.productos = JSON.parse(localStorage.getItem("inventario.productos"));
-        //     }
-        // }
+        function save(){
+            localStorage.setItem("inventario.productos",JSON.stringify(inventario.productos));
+        }
+        function load(){
+            if(!!localStorage.getItem("inventario.productos")){
+                inventario.productos = JSON.parse(localStorage.getItem("inventario.productos"));
+            }
+            
+        }
     </script>
 </body>
 </html>
-
 
 
 
