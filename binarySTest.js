@@ -26,6 +26,8 @@ function rankForBSearch(key, arr){
         }
         arrAux[mid] = key[i];
     }
+    //arrAux[arrAux.length - 2] = arr[arr.length - 1]; INTENTO DE SOLUCION
+    //arrAux[arrAux.length - 1] =  key[key.length - 1]; FUNCIONA CON ESTE CASO, PERO NO FUNCIONA SI SE LE AGREGA MAS VALORES A LOS VECTORES
     aux = [arrAux,posicion];
    return aux;
 }
