@@ -1,40 +1,37 @@
 let vec1=[1,1,1,2,3,4,6,7,8,8,9,15];
 let vec2=[2,5,6,7,8,9,9,9,9,9,10,11,12,13,14,15,15,16];
-let b = 16;
-function rankForBSearch(key, arr){
-    let aux = [];
-    let posicion = [];
-    let arrAux = [...arr]; // == let arrAux = arr; pero sin modificar al original
-    for(let i= 0; i< key.length;i++){
-        let lo = 0;
-        let hi = arrAux.length - 1;
-        let mid = 0;
-        while(lo <= hi){
-            mid = Math.floor(lo + (hi - lo) / 2);
-            if(arrAux[mid] > key[i]){
-                hi = mid - 1;
-            }
-            else if(arrAux[mid] < key[i]){
-                lo = mid + 1;
-            }
-            else hi --;
 
+function createNeat3rdArr(arr, arr2){ //WHERE arr2 is the longest
+    let arr3 = [];
+    let arr3Length = arr.length + arr2.length;
+    let bigNum;
+    if(arr[0] > arr2[0]){
+        bigNum = arr[0];
+    }else{
+        bigNum = arr2[0];
+        for(let i = 0, j = 0, k = 0; i < arr3Length; i++){
+            if(arr[j] < bigNum){
+                arr3[i] = arr[j];
+                j++
+            }
+            else if(arr2[k] < bigNum){
+                arr3[i] = arr2[k];
+                k++;
+            }
+            else{
+                arr3[i] = bigNum;
+                i++;
+                k++;
+                arr3[i] = arr[j]; //DETALL AQUI en ultimos valorse los ultimos 15 impresos son el mismo (el ultimo del primer arr)
+                j++;
+                if(arr[j] < arr2[k]){
+                    bigNum = arr2[k]
+                }else bigNum = arr[j];
+            }
         }
-        posicion[i] = mid ;
-        for(let j = arrAux.length - 1; j >= mid ; j--){
-            arrAux[j + 1] = arrAux[j];
-        }
-        arrAux[mid] = key[i];
     }
-    //arrAux[arrAux.length - 2] = arr[arr.length - 1]; INTENTO DE SOLUCION
-    //arrAux[arrAux.length - 1] =  key[key.length - 1]; FUNCIONA CON ESTE CASO, PERO NO FUNCIONA SI SE LE AGREGA MAS VALORES A LOS VECTORES
-    aux = [arrAux,posicion];
-   return aux;
+    return arr3;
 }
-vec3 = rankForBSearch(vec2,vec1); 
+console.log(createNeat3rdArr(vec1, vec2));  //[1, 1, 1, 2, 2, 3, 4, 5, 6, 6, 7, 7, 8, 8, 8, 9, 9, 9, 9, 9, 9, 10, 11, 12, 13, 14, 15, 15, undefined, undefined]
 console.log(vec1);
 console.log(vec2);
-vec3 = rankForBSearch(vec2,vec1)[0];
-pos = rankForBSearch(vec2, vec1)[1]; 
-console.log(vec3); //output [1, 1, 1, 2, 2, 3, 4, 5, 6, 6, 7, 7, 8, 8, 8, 9, 9, 9, 9, 9, 9, 10, 11, 12, 13, 14, 15, 15, 16, 15] ERROR EN ULTIMO VALOR DE ARR2 SE INTRODUCE EN PENULTIMA
-console.log(pos); //[3, 7, 8, 10, 12, 15, 15, 15, 15, 15, 21, 22, 23, 24, 25, 26, 26, 28] <- indice 28 es donde se introduce el valor 16
