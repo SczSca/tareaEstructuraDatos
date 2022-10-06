@@ -62,6 +62,6 @@ function createNeat3rdArr(arr, arr2){ //WHERE arr2 is the longest
     }
     return arr3;
 }
-console.log(createNeat3rdArr(vec1, vec2));  //[1, 1, 1, 2, 2, 3, 4, 5, 6, 6, 7, 7, 8, 8, 8, 9, 9, 9, 9, 9, 9, 10, 11, 12, 13, 14, 15, 15, undefined, undefined]
+console.log(createNeat3rdArr(vec1, vec2));  //[1, 1, 1, 2, 2, 2, 2, 3, 4, 5, 6, 6, 7, 7, 8, 8, 8, 9, 9, 9, 9, 9, 9, 10, 10, 11, 12, 13, 14, 15, 15, 15, 16, 22, 23, 28]
 console.log(vec1);
 console.log(vec2);
