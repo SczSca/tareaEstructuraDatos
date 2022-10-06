@@ -44,38 +44,39 @@
                 let i = 0;
                 let aux = {}, aux2 = {};
                 let thisProductosLength = this.productos.length;
-                if(thisProductosLength == 0){
+                if(thisProductosLength == 0){ //primer producto se agrega a primera posicion
                     this.productos[0] = producto;
-                    return 1;
+                    return this.productos;
                 }
-                else if(thisProductosLength == 1){
+                else if(thisProductosLength == 1){ // segundo producto se compara si es menor o mayor al primero
                     if(this.productos[0].codigo <= producto.codigo ){
                         this.productos[1] = producto;
-                        return 2;
+                        return this.productos;
                     }
-                    else if(this.productos[0].codigo > producto.codigo){
+                    else if(this.productos[0].codigo > producto.codigo){ // mayor se recorre el primer producto
                         this.productos[1] = this.productos[0];
                         this.productos[0] = producto;
-                        return 3;
+                        return this.productos;
                     }
                     
                 }
+                //se checa cual es el camino mas corto en base a cual es la resta mas pequena 
                 else if( Math.abs(producto.codigo - this.productos[0].codigo) < Math.abs(producto.codigo - this.productos[this.productos.length - 1].codigo)){
+                    //se inicia la busqueda desde primera posicion
                     while(pos == undefined){
-                        if(this.productos[i].codigo < producto.codigo && this.productos[i + 1].codigo > producto.codigo){
-                            pos = i;
+                          
+                        if(this.productos[i].codigo > producto.codigo && (this.productos[i -1] == undefined || this.productos[i - 1].codigo < producto.codigo)){
+                            pos = i; //indice donde iria new product
                         }
-                        else if(this.productos[i].codigo > producto.codigo && i == 0){
-                            pos = i;
-                        }
+                
                         i++;
                     }
-                    aux = this.productos[pos];
+                    aux = this.productos[pos]; //almacena el producto actual del indice donde iria new product
                     
                 }
-                else{
+                else{ // se inicia busqueda desde el ultimo producto
                     i = this.productos.length - 1;
-                    if(producto.codigo > this.productos[i].codigo){
+                    if(producto.codigo > this.productos[i].codigo){ 
                         this.productos[i + 1] = producto;
                         return this.productos;
                     }
@@ -89,13 +90,14 @@
                         aux = this.productos[pos];
                     }
                 }
-                for(let i = pos; i < thisProductosLength; i++){
+                //se almacena tamaño del array de productos para no hacer un ciclo infinito
+                for(let i = pos; i < thisProductosLength; i++){ //empuja todos los productos desde la pos obtenida
                     aux2 = this.productos[i + 1];
                     this.productos[i + 1] = aux;
                     aux = aux2;
                 }
                 this.productos[pos] = producto;
-                return 5;
+                return this.productos;
             }
             rankForBSearch(key){
                 let lo = 0;
@@ -146,7 +148,7 @@
                     // }else{
                     //     return false;
                     // }
-                    let aux =this.productos.length -1;
+                    let aux =this.productos[this.productos.length -1];
                     let aux2 ={};
                     if(this.rankForBSearch(code) == null){
                         return false;
@@ -157,8 +159,9 @@
                             this.productos[i - 1] = aux;
                             aux = aux2;
                         }
+
                         this.productos.pop();
-                        return true;
+                        return this.rankForBSearch(code);
                     }   
                 
             }
@@ -223,7 +226,7 @@
             
         }
         const inventario = new Inventario();
-        load();
+        // load();
         let i = 0;
         // const btnTest = document.getElementById("test"); //ITS USED FOR TESTING
         // btnTest.addEventListener("click",()=>{
@@ -248,10 +251,10 @@
             let cantidad = document.getElementById("cantidad").value;
             let code = Number(document.getElementById("code").value);
             if(!!name && !!code && !!costo && !!cantidad ){ //introduce todos los valores importantes
-                    if(inventario.rankForBSearch(code) == null){
+                    if(inventario.rankForBSearch(code) == null){ //no existe el codigo, crear new product
                         const producto = new Producto(name,code, costo, cantidad);
-                        console.log(inventario.addProducto(producto));
-                        save();
+                        inventario.addProducto(producto);
+                        // save();
                     }else{
                         console.log("codigo ya existente");
                     }
@@ -276,8 +279,8 @@
         btnDelete.addEventListener("click",()=>{
             let code = Number(document.getElementById("code").value);
 
-            inventario.deleteProducto(code);
-            save();
+            console.log(inventario.deleteProducto(code));
+            // save();
         });
         const btnInverseList = document.getElementById("inverseList");
         btnInverseList.addEventListener("click", ()=>{
@@ -293,23 +296,23 @@
             if(!!name && !!code && !!costo && !!cantidad && !!posicion){ //introduce todos los valores importantes
                     const producto = new Producto(name,code, costo, cantidad);
                     inventario.addToNIdProducto(producto,posicion);
-                    save();
+                    // save();
                     
                 }else{
                     alert("Dato faltante");
                 }
         })
         
-        function save(){
-            localStorage.setItem("inventario.productos",JSON.stringify(inventario.productos));
-        }
-        function load(){
-            if(!!localStorage.getItem("inventario.productos")){
-                inventario.productos = JSON.parse(localStorage.getItem("inventario.productos"));
+        // function save(){
+        //     localStorage.setItem("inventario.productos",JSON.stringify(inventario.productos));
+        // }
+        // function load(){
+        //     if(!!localStorage.getItem("inventario.productos")){
+        //         inventario.productos = JSON.parse(localStorage.getItem("inventario.productos"));
                 
-            }
-                       
-        }
+        //     }
+        //     localStorage.clear();                                   
+        // }
     </script>
 </body>
 </html>
