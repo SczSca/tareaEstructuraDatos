@@ -1,39 +1,68 @@
-let vec1=[1,1,1,2,3,4,6,7,8,8,9,15];
-let vec2=[2,5,6,7,8,9,9,9,9,9,10,11,12,13,14,15,15,16];
-let b = 16;
-function rankForBSearch(key, arr){
-    let aux = [];
-    let posicion = [];
-    let arrAux = arr;
-    for(let i= 0; i< key.length;i++){
-        let lo = 0;
-        let hi = arrAux.length - 1;
-        let mid = 0;
-        while(lo <= hi){
-            mid = Math.floor(lo + (hi - lo) / 2);
-            if(arrAux[mid] > key[i]){
-                hi = mid - 1;
-            }
-            else if(arrAux[mid] < key[i]){
-                lo = mid + 1;
-            }
-            else hi --;
+let vec1=[1,1,1,2,2,2,3,4,6,7,8,8,9,10,15];
+let vec2=[2,5,6,7,8,9,9,9,9,9,10,11,12,13,14,15,15,16,22,23,28];
 
+function createNeat3rdArr(arr, arr2){ //WHERE arr2 is the longest
+    let arr3 = [];
+    let arr3Length = arr.length + arr2.length;
+    let bigNum;
+    // if(arr[0] > arr2[0]){
+    //     bigNum = arr[0];
+    // }else{
+    //     bigNum = arr2[0];
+    //     for(let i = 0, j = 0, k = 0; i < arr3Length; i++){
+    //         if(arr[j] < bigNum){
+    //             arr3[i] = arr[j];
+    //             j++
+    //         }
+    //         else if(arr2[k] < bigNum){
+    //             arr3[i] = arr2[k];
+    //             k++;
+    //         }
+    //         else if(arr[j] == undefined){
+    //             arr3 = arr2[k];
+    //             k++;
+    //         }
+    //         else{
+    //             arr3[i] = bigNum;
+    //             i++;
+    //             k++;
+    //             arr3[i] = arr[j]; //DETALL AQUI en ultimos valorse los ultimos 15 impresos son el mismo (el ultimo del primer arr)
+    //             j++;
+    //             if(arr[j] < arr2[k]){
+    //                 bigNum = arr2[k]
+    //             }else bigNum = arr[j];
+    //         }
+    //     }
+    // }
+    for(let i = 0, j = 0, k = 0; i < arr3Length; i++){
+        if(arr[j] == arr2[k]){
+            arr3[i] = arr[j];
+            i++;
+            arr3[i] = arr2[k];
+            j++;
+            k++;
         }
-        posicion[i] = mid + 1;
-        for(let j = arrAux.length - 1; j >= mid + 1; j--){
-            arrAux[j + 1] = arrAux[j]
+        else if(arr[j] > arr2[k]){
+            arr3[i] = arr2[k];
+            k++;
+            
         }
-        arrAux[mid + 1] = key[i];
+        else if(arr2[k] > arr[j]){
+            arr3[i] = arr[j];
+            j++;
+        }
+        else if(arr[j] == undefined){
+            arr3[i] = arr2[k];
+            k++;
+        }
+        else if(arr2[k] == undefined){
+            arr3[i] = arr[j];
+            j++;
+        }
     }
-    aux = [arrAux,posicion];
-   return aux;
+    return arr3;
 }
-// vec3 = rankForBSearch(vec2,vec1); si genero esto antes de querer imprimir vec1, el vec1 se iguala a vec3 Y NO ENTIENDO POR QUE
-// console.log(vec3);
+console.log(createNeat3rdArr(vec1, vec2));  //[1, 1, 1, 2, 2, 3, 4, 5, 6, 6, 7, 7, 8, 8, 8, 9, 9, 9, 9, 9, 9, 10, 11, 12, 13, 14, 15, 15, undefined, undefined]
 console.log(vec1);
 console.log(vec2);
-vec3 = rankForBSearch(vec2,vec1)[0];
-// pos = rankForBSearch(vec2, vec1)[1]; si genero esto, el vec3 se le agregan mas valores Y NO ENTIENDO POR QUE
-console.log(vec3);
-// console.log(pos);
+console.log()
