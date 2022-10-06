@@ -40,15 +40,67 @@
                 this.productos= [];
             }
             addProducto(producto){
-                
-                this.productos.push(producto);
-                
+                let pos;
+                let i = 0;
+                let aux = {}, aux2 = {};
+                let thisProductosLength = this.productos.length;
+                if(thisProductosLength == 0){
+                    this.productos[0] = producto;
+                    return 1;
+                }
+                else if(thisProductosLength == 1){
+                    if(this.productos[0].codigo <= producto.codigo ){
+                        this.productos[1] = producto;
+                        return 2;
+                    }
+                    else if(this.productos[0].codigo > producto.codigo){
+                        this.productos[1] = this.productos[0];
+                        this.productos[0] = producto;
+                        return 3;
+                    }
+                    
+                }
+                else if( Math.abs(producto.codigo - this.productos[0].codigo) < Math.abs(producto.codigo - this.productos[this.productos.length - 1].codigo)){
+                    while(pos == undefined){
+                        if(this.productos[i].codigo < producto.codigo && this.productos[i + 1].codigo > producto.codigo){
+                            pos = i;
+                        }
+                        else if(this.productos[i].codigo > producto.codigo && i == 0){
+                            pos = i;
+                        }
+                        i++;
+                    }
+                    aux = this.productos[pos];
+                    
+                }
+                else{
+                    i = this.productos.length - 1;
+                    if(producto.codigo > this.productos[i].codigo){
+                        this.productos[i + 1] = producto;
+                        return this.productos;
+                    }
+                    else{
+                        while(pos == undefined){
+                            if(producto.codigo < this.productos[i].codigo && producto.codigo > this.productos[i - 1].codigo){
+                            pos = i;    
+                            }
+                            i--;
+                        }
+                        aux = this.productos[pos];
+                    }
+                }
+                for(let i = pos; i < thisProductosLength; i++){
+                    aux2 = this.productos[i + 1];
+                    this.productos[i + 1] = aux;
+                    aux = aux2;
+                }
+                this.productos[pos] = producto;
+                return 5;
             }
             rankForBSearch(key){
                 let lo = 0;
                 let hi = this.productos.length - 1;
                 let mid = 0;
-                let aux = [];
                 while(lo <= hi){
                     mid = Math.floor(lo + (hi - lo) / 2);
                     if(this.productos[mid].codigo > key){
@@ -58,15 +110,15 @@
                         lo = mid + 1;
                     }
                     else {
-                        aux =[mid,key,"ENCONTRADO"];
-                        return aux;
+                        return mid;
                     }
                 }
-                aux = [mid,key];
-                return aux;
+                return null;
             }
-            binarySearch(){
-
+            binarySearch(code){
+                let posicion = this.rankForBSearch(code);
+                if(posicion == null)    return posicion;
+                else                    return this.productos[posicion];
             }
             addToNIdProducto(producto,pos){
                 pos--;
@@ -79,21 +131,35 @@
                 
             }
             deleteProducto(code){
-                    let i = 0;
-                    let aux = 0;
-                    for (i in this.productos){
-                        if (this.productos[i].codigo == code){
-                        aux = 1; 
-                        }else if(aux == 1){
-                            this.productos[i - 1] = this.productos[i];
-                        }
-                    }
-                    if(aux == 1){
-                        this.productos.pop();
-                        return true;
-                    }else{
+                    // let i = 0;
+                    // let aux = 0;
+                    // for (i in this.productos){
+                    //     if (this.productos[i].codigo == code){
+                    //     aux = 1; 
+                    //     }else if(aux == 1){
+                    //         this.productos[i - 1] = this.productos[i];
+                    //     }
+                    // }
+                    // if(aux == 1){
+                    //     this.productos.pop();
+                    //     return true;
+                    // }else{
+                    //     return false;
+                    // }
+                    let aux =this.productos.length -1;
+                    let aux2 ={};
+                    if(this.rankForBSearch(code) == null){
                         return false;
                     }
+                    else{
+                        for(let i = this.productos.length - 1; i > this.rankForBSearch(code); i--){
+                            aux2 = this.productos[i - 1];
+                            this.productos[i - 1] = aux;
+                            aux = aux2;
+                        }
+                        this.productos.pop();
+                        return true;
+                    }   
                 
             }
             showProductos(){
@@ -159,24 +225,39 @@
         const inventario = new Inventario();
         load();
         let i = 0;
-        const btnTest = document.getElementById("test");
-        btnTest.addEventListener("click",()=>{
-            let code = document.getElementById("code").value;
-            console.log(inventario.rankForBSearch(code));
-        })
+        // const btnTest = document.getElementById("test"); //ITS USED FOR TESTING
+        // btnTest.addEventListener("click",()=>{
+        //     let name = document.getElementById("name").value;
+        //     let costo = document.getElementById("costo").value;
+        //     let cantidad = document.getElementById("cantidad").value;
+        //     let code = Number(document.getElementById("code").value);
+        //     if(!!name && !!code && !!costo && !!cantidad ){ //introduce todos los valores importantes
+        //             const producto = new Producto(name,code, costo, cantidad);
+                    
+        //             console.log(inventario.testAdd(producto))
+                    
+        //         }else{
+        //             alert("Dato faltante"); //NO USAR ALERTS
+        //         }
+            
+        // });
         const btnAdd = document.getElementById("add");
         btnAdd.addEventListener("click", ()=>{
             let name = document.getElementById("name").value;
             let costo = document.getElementById("costo").value;
             let cantidad = document.getElementById("cantidad").value;
-            let code = document.getElementById("code").value;
+            let code = Number(document.getElementById("code").value);
             if(!!name && !!code && !!costo && !!cantidad ){ //introduce todos los valores importantes
-                    const producto = new Producto(name,code, costo, cantidad);
-                    inventario.addProducto(producto);
-                    save();
+                    if(inventario.rankForBSearch(code) == null){
+                        const producto = new Producto(name,code, costo, cantidad);
+                        console.log(inventario.addProducto(producto));
+                        save();
+                    }else{
+                        console.log("codigo ya existente");
+                    }
                     
                 }else{
-                    alert("Dato faltante"); //NO USAR ALERTS
+                    console.log("Dato faltante"); //NO USAR ALERTS
                 }
         })
         const btnList = document.getElementById("list");
@@ -185,15 +266,15 @@
         })
         const btnSearch = document.getElementById("search");
         btnSearch.addEventListener("click", ()=>{
-            let ul = document.getElementById("line");
-            let li = ul.getElementsByTagName("li");
-            let div = document.getElementsByClassName("show");
             let code = document.getElementById("code").value;
-            console.log(inventario.searchProducto(code));
+            if(inventario.binarySearch(code) == null){
+                console.log(`Producto con codigo "${code}" no existe`);
+            }
+            else console.log(inventario.binarySearch(code));
         });
         const btnDelete = document.getElementById("delete");
         btnDelete.addEventListener("click",()=>{
-            let code = document.getElementById("code").value;
+            let code = Number(document.getElementById("code").value);
 
             inventario.deleteProducto(code);
             save();
@@ -225,8 +306,9 @@
         function load(){
             if(!!localStorage.getItem("inventario.productos")){
                 inventario.productos = JSON.parse(localStorage.getItem("inventario.productos"));
+                
             }
-            
+                       
         }
     </script>
 </body>
