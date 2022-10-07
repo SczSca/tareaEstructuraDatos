@@ -16,15 +16,12 @@
     <input type="number" id="costo"> <br>
     <label for="cantidad">cantidad</label><br>
     <input type="number" id="cantidad"> <br>
-    <label for="posicion">posicion **OPCIONAL***</label><br>
-    <input type="number" id="posicion"> <br>
     <button class="bttn" id="add" >New Product</button> 
     <button id="list">List</button>
+    <button id="inverseList">Inverse List</button>
     <button id = "delete">Delete</button>
     <button id="search">Search</button>
-    <button id="inverseList">Inverse List</button>
-    <button id="insert">Insert</button>
-    <button id="test">Test</button>
+    <!-- <button id="test">Test</button> --> <!--ACTIVATE TO TEST CODE-->
     <ul id="line"></ul>
     <script>
         class Producto{
@@ -122,89 +119,47 @@
                 if(posicion == null)    return posicion;
                 else                    return this.productos[posicion];
             }
-            addToNIdProducto(producto,pos){
-                pos--;
-                if(!!this.productos[pos]){
-                    for(let i = this.productos.length - 1; i >= pos; i--){
-                        this.productos[i + 1] = this.productos[i];
-                    }
-                }
-                this.productos[pos] = producto;
-                
-            }
+
             deleteProducto(code){
-                    // let i = 0;
-                    // let aux = 0;
-                    // for (i in this.productos){
-                    //     if (this.productos[i].codigo == code){
-                    //     aux = 1; 
-                    //     }else if(aux == 1){
-                    //         this.productos[i - 1] = this.productos[i];
-                    //     }
-                    // }
-                    // if(aux == 1){
-                    //     this.productos.pop();
-                    //     return true;
-                    // }else{
-                    //     return false;
-                    // }
                     let aux =this.productos[this.productos.length -1];
                     let aux2 ={};
-                    if(this.rankForBSearch(code) == null){
+                    let pos = this.rankForBSearch(code);
+                    if(pos == null){
                         return false;
                     }
                     else{
-                        for(let i = this.productos.length - 1; i > this.rankForBSearch(code); i--){
+                        for(let i = this.productos.length - 1; i > pos; i--){
                             aux2 = this.productos[i - 1];
                             this.productos[i - 1] = aux;
                             aux = aux2;
                         }
 
                         this.productos.pop();
-                        return this.rankForBSearch(code);
+                        return pos;
                     }   
                 
             }
             showProductos(){
                 let line = "";
                 for(i in this.productos){ //imprime todos los productos
-                    if(!!this.productos[i]){
-                        line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
+                    line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
                         <b>Nombre :</b>${this.productos[i].name} <br>
                         <b>Codigo :</b><a>${this.productos[i].codigo}</a> <br>
                         <b>Costo :</b>${this.productos[i].costo} <br>
                         <b>Cantidad :</b> ${this.productos[i].cantidad}
                         </li></div>`
-                    }
-                    else{
-                        line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
-                        <b>Nombre :</b>VACIO <br>
-                        <b>Codigo :</b><a>VACIO</a> <br>
-                        <b>Costo :</b>VACIO <br>
-                        <b>Cantidad :</b> VACIO
-                        </li></div>`
-                    }
                 }
                 return line;
             }
             showProductoInverso(){
                 let line = "";
                 for(let i = this.productos.length - 1; i >= 0; i--){ //imprime todos los productos
-                    if(!!this.productos[i]){
-                        line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
+                    line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
                         <b>Nombre :</b>${this.productos[i].name} <br>
                         <b>Codigo :</b><a>${this.productos[i].codigo}</a> <br>
                         <b>Costo :</b>${this.productos[i].costo} <br>
                         <b>Cantidad :</b> ${this.productos[i].cantidad}
                         </li></div>`
-                    }else{
-                        line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
-                        <b>Nombre :</b>VACIO <br>
-                        <b>Codigo :</b><a>VACIO</a> <br>
-                        <b>Costo :</b>VACIO <br>
-                        <b>Cantidad :</b> VACIO
-                        </li></div>` 
-                    }
                 }
                 return line;
             }
@@ -286,22 +241,7 @@
         btnInverseList.addEventListener("click", ()=>{
             document.getElementById("line").innerHTML = inventario.showProductoInverso();
         });
-        const btnInsert = document.getElementById("insert");
-        btnInsert.addEventListener("click",()=>{
-            let name = document.getElementById("name").value;
-            let costo = document.getElementById("costo").value;
-            let cantidad = document.getElementById("cantidad").value;
-            let code = document.getElementById("code").value;
-            let posicion = document.getElementById("posicion").value;
-            if(!!name && !!code && !!costo && !!cantidad && !!posicion){ //introduce todos los valores importantes
-                    const producto = new Producto(name,code, costo, cantidad);
-                    inventario.addToNIdProducto(producto,posicion);
-                    // save();
-                    
-                }else{
-                    alert("Dato faltante");
-                }
-        })
+
         
         // function save(){
         //     localStorage.setItem("inventario.productos",JSON.stringify(inventario.productos));
