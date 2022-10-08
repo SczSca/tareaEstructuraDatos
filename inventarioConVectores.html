@@ -21,7 +21,7 @@
     <button id="inverseList">Inverse List</button>
     <button id = "delete">Delete</button>
     <button id="search">Search</button>
-    <!-- <button id="test">Test</button> --> <!--ACTIVATE TO TEST CODE-->
+    <button id="test">Test</button> <!--ACTIVATE TO TEST CODE-->
     <ul id="line"></ul>
     <script>
         class Producto{
@@ -35,6 +35,23 @@
         class Inventario {
             constructor(){
                 this.productos= [];
+            }
+            addBSearchProducto(producto){
+                if(this.productos.length == 0){
+                    this.productos[this.productos.length] = producto;
+                }
+                else{
+                    let pos = this.rankForBSearch(producto.codigo)[1];
+                    if (this.productos[pos].codigo < producto.codigo){
+                        pos += 1;
+                    }
+                    let thisProductosLength = this.productos.length;
+                    for(let i = thisProductosLength - 1; i >= pos; i--){
+                        this.productos[i + 1] = this.productos[i];
+                    }
+                    this.productos[pos] = producto;
+                }
+                return this.productos;
             }
             addProducto(producto){
                 let pos;
@@ -109,33 +126,33 @@
                         lo = mid + 1;
                     }
                     else {
-                        return mid;
+                        return [1,mid];
                     }
                 }
-                return null;
+                return [null,mid];
             }
             binarySearch(code){
                 let posicion = this.rankForBSearch(code);
-                if(posicion == null)    return posicion;
-                else                    return this.productos[posicion];
+                if(posicion[0] == null)    return posicion[0];
+                else                    return this.productos[posicion[1]];
             }
 
             deleteProducto(code){
                     let aux =this.productos[this.productos.length -1];
                     let aux2 ={};
                     let pos = this.rankForBSearch(code);
-                    if(pos == null){
+                    if(pos[0] == null){
                         return false;
                     }
                     else{
-                        for(let i = this.productos.length - 1; i > pos; i--){
+                        for(let i = this.productos.length - 1; i > pos[1]; i--){
                             aux2 = this.productos[i - 1];
                             this.productos[i - 1] = aux;
                             aux = aux2;
                         }
 
                         this.productos.pop();
-                        return pos;
+                        return true;
                     }   
                 
             }
@@ -183,22 +200,22 @@
         const inventario = new Inventario();
         // load();
         let i = 0;
-        // const btnTest = document.getElementById("test"); //ITS USED FOR TESTING
-        // btnTest.addEventListener("click",()=>{
-        //     let name = document.getElementById("name").value;
-        //     let costo = document.getElementById("costo").value;
-        //     let cantidad = document.getElementById("cantidad").value;
-        //     let code = Number(document.getElementById("code").value);
-        //     if(!!name && !!code && !!costo && !!cantidad ){ //introduce todos los valores importantes
-        //             const producto = new Producto(name,code, costo, cantidad);
+        const btnTest = document.getElementById("test"); //ITS USED FOR TESTING
+        btnTest.addEventListener("click",()=>{
+            let name = document.getElementById("name").value;
+            let costo = document.getElementById("costo").value;
+            let cantidad = document.getElementById("cantidad").value;
+            let code = Number(document.getElementById("code").value);
+            if(!!name && !!code && !!costo && !!cantidad ){ //introduce todos los valores importantes
+                    const producto = new Producto(name,code, costo, cantidad);
                     
-        //             console.log(inventario.testAdd(producto))
+                    console.log(inventario.addBSearchProducto(producto))
                     
-        //         }else{
-        //             alert("Dato faltante"); //NO USAR ALERTS
-        //         }
+                }else{
+                    alert("Dato faltante"); //NO USAR ALERTS
+                }
             
-        // });
+        });
         const btnAdd = document.getElementById("add");
         btnAdd.addEventListener("click", ()=>{
             let name = document.getElementById("name").value;
@@ -206,9 +223,9 @@
             let cantidad = document.getElementById("cantidad").value;
             let code = Number(document.getElementById("code").value);
             if(!!name && !!code && !!costo && !!cantidad ){ //introduce todos los valores importantes
-                    if(inventario.rankForBSearch(code) == null){ //no existe el codigo, crear new product
+                    if(inventario.rankForBSearch(code)[0] == null){ //no existe el codigo, crear new product
                         const producto = new Producto(name,code, costo, cantidad);
-                        inventario.addProducto(producto);
+                        inventario.addBSearchProducto(producto);
                         // save();
                     }else{
                         console.log("codigo ya existente");
