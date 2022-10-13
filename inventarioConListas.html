@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Productos</h1>
+    <label for="name">Name</label> <br>
+    <input type="text" id="name"> <br>
+    <label for="code">Codigo</label> <br>
+    <input type="number" id="code"> <br>
+    <label for="costo">costo</label> <br>
+    <input type="number" id="costo"> <br>
+    <label for="cantidad">cantidad</label><br>
+    <input type="number" id="cantidad"> <br>
+    <label for="posicion">posicion *OPCIONAL*</label><br>
+    <input type="number" id="posicion"> <br>
+    <button class="bttn" id="add" >New Product</button>
+    <button class="bttn" id="insert" >Insert</button> 
+    <button id="list">List</button>
+    <button id="inverseList">Inverse List</button>
+    <button id="search">Search</button>
+    <button id = "delete">Delete</button>
+    <ul id="line"></ul>
+    <script>
+        class Producto{
+            constructor(name,codigo, costo, cantidad){
+                this.name= name;
+                this.codigo = codigo;
+                this.costo = costo;
+                this.cantidad = cantidad;
+                this.next = null;
+            }
+        }
+        class Inventario {
+            constructor(){
+                this.first = null;
+            }
+            addProducto(newNode){
+                if(this.first == null){
+                    this.first = newNode;
+                }
+                else{
+                    let aux = this.first;
+                    while(!!aux.next){
+                        aux= aux.next;
+                    }
+                    aux.next = newNode;
+                }
+            }
+            addProductoToN(pos, newNode){
+                let aux = this.first;
+                let i = 1;
+                pos--;
+                if(pos == 0){
+                    newNode.next = this.first;
+                    this.first = newNode;
+                }
+                else{
+                while(!!aux && i < pos ){
+                    aux = aux.next;
+                    i++;
+                }
+                newNode.next = aux.next;
+                aux.next = newNode;
+                }
+            }
+            rankForBSearch(key){
+                let lo = 0;
+                let hi = this.productos.length - 1;
+                let mid = 0;
+                while(lo <= hi){
+                    mid = Math.floor(lo + (hi - lo) / 2);
+                    if(this.productos[mid].codigo > key){
+                        hi = mid - 1;
+                    }
+                    else if(this.productos[mid].codigo < key){
+                        lo = mid + 1;
+                    }
+                    else {
+                        return [1,mid];
+                    }
+                }
+                return [null,mid];
+            }
+            binarySearch(code){
+                let posicion = this.rankForBSearch(code);
+                if(posicion[0] == null)    return posicion[0];
+                else                    return this.productos[posicion[1]];
+            }
+
+            dqeleteProducto(code){
+                let aux = this.first;
+                let aux2;
+                let value;
+                while(!!aux &&aux.codigo != code){
+                    aux2 = aux;
+                    aux = aux.next;
+                }
+                if (aux == null){
+                    value = "No se borró ningun producto";
+                }
+                else{
+                    if(aux == this.first && aux.next == null){
+                        
+                        this.first = null;
+                    }
+                    else if(aux == this.first){
+                        this.first = this.first.next;
+                    }
+                    else{
+                        aux2.next = aux.next;
+                    }
+
+                    value = "producto borrado";
+                }
+                
+                return value;
+                
+            }
+            showProductos(){
+                let line = ``;
+                let aux = this.first;
+                let i = 0;
+                while(!!aux){ //imprime todos los productos
+                    line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
+                        <b>Nombre :</b>${aux.name} <br>
+                        <b>Codigo :</b><a>${aux.codigo}</a> <br>
+                        <b>Costo :</b>${aux.costo} <br>
+                        <b>Cantidad :</b> ${aux.cantidad}
+                        </li></div>`;
+                    aux = aux.next;
+                    i++;
+                    }
+                return line;
+            }
+            showProductoInverso(){
+                let line = ``;
+                let aux = this.first;
+                let i = 0;
+                while(!!aux){
+                    line = `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
+                        <b>Nombre :</b>${aux.name} <br>
+                        <b>Codigo :</b><a>${aux.codigo}</a> <br>
+                        <b>Costo :</b>${aux.costo} <br>
+                        <b>Cantidad :</b> ${aux.cantidad}
+                        </li></div>  ${line}`;
+                        aux = aux.next;
+                        i++;
+                    }
+                return line;
+            }
+            searchProducto(code){ 
+                let aux = this.first;
+                let value;
+                while(!!aux &&aux.codigo != code){
+                    aux = aux.next;
+                }
+                value = aux;
+                return value;
+            }
+
+            
+        }
+        const inventario = new Inventario();
+        // load();
+        let i = 0;
+
+        const btnAdd = document.getElementById("add");
+        btnAdd.addEventListener("click", ()=>{
+            let name = document.getElementById("name").value;
+            let costo = document.getElementById("costo").value;
+            let cantidad = document.getElementById("cantidad").value;
+            let code = Number(document.getElementById("code").value);
+            if(!!name && !!code && !!costo && !!cantidad ){ //introduce todos los valores importantes
+                    
+                const producto = new Producto(name,code, costo, cantidad);
+                inventario.addProducto(producto);
+                // save();
+                    
+            }else{
+                console.log("Dato faltante"); //NO USAR ALERTS
+            }
+        })
+        const btnInsert = document.getElementById("insert");
+        btnInsert.addEventListener("click", ()=>{
+            let name = document.getElementById("name").value;
+            let costo = document.getElementById("costo").value;
+            let cantidad = document.getElementById("cantidad").value;
+            let code = Number(document.getElementById("code").value);
+            let pos = document.getElementById("posicion").value;
+            if(!!name && !!code && !!costo && !!cantidad && !!pos){ //introduce todos los valores importantes
+                
+                const producto = new Producto(name,code, costo, cantidad);    
+                inventario.addProductoToN(pos,producto);
+                    
+            }else{
+                console.log("Dato faltante"); //NO USAR ALERTS
+            }
+        })
+        const btnList = document.getElementById("list");
+        btnList.addEventListener("click",()=>{
+            document.getElementById("line").innerHTML = inventario.showProductos();
+        })
+        const btnSearch = document.getElementById("search");
+        btnSearch.addEventListener("click", ()=>{
+            let code = document.getElementById("code").value;
+            
+            console.log(inventario.searchProducto(code));
+        });
+        const btnDelete = document.getElementById("delete");
+        btnDelete.addEventListener("click",()=>{
+            let code = Number(document.getElementById("code").value);
+
+            console.log(inventario.deleteProducto(code));
+            // save();
+        });
+        const btnInverseList = document.getElementById("inverseList");
+        btnInverseList.addEventListener("click", ()=>{
+            document.getElementById("line").innerHTML = inventario.showProductoInverso();
+        });
+
+        
+        // function save(){
+        //     localStorage.setItem("inventario.productos",JSON.stringify(inventario.productos));
+        // }
+        // function load(){
+        //     if(!!localStorage.getItem("inventario.productos")){
+        //         inventario.productos = JSON.parse(localStorage.getItem("inventario.productos"));
+                
+        //     }
+        //     localStorage.clear();                                   
+        // }
+    </script>
+</body>
+</html>
