@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Productos</h1>
+    <label for="name">Name</label> <br>
+    <input type="text" id="name"> <br>
+    <label for="code">Codigo</label> <br>
+    <input type="number" id="code"> <br>
+    <label for="costo">costo</label> <br>
+    <input type="number" id="costo"> <br>
+    <label for="cantidad">cantidad</label><br>
+    <input type="number" id="cantidad"> <br>
+    <button class="bttn" id="add" >New Product</button> 
+    <button id="list">List</button>
+    <button id="inverseList">Inverse List</button>
+    <button id="search">Search</button>
+    <button id = "delete">Delete</button>
+    <ul id="line"></ul>
+    <script>
+        class Producto{
+            constructor(name,codigo, costo, cantidad){
+                this.name= name;
+                this.codigo = codigo;
+                this.costo = costo;
+                this.cantidad = cantidad;
+                this.next = null;
+                this.before = null
+            }
+        }
+        class Inventario {
+            constructor(){
+                this.first = null;
+                this.last = null;
+            }
+            addProducto(newNode){
+                if(this.first === null){
+                    this.first = newNode;
+                    this.last = this.first;
+                }
+                else if(this.first.codigo > newNode.codigo){
+                    this.first.before = newNode;
+                    newNode.next = this.first;
+                    this.first = newNode;
+                }
+                else if(this.last.codigo < newNode.codigo){
+                    this.last.next = newNode;
+                    newNode.before = this.last;
+                    this.last = newNode;
+                }
+                else {
+                    let temp = this.first;
+                    let temp2 = this.first.next;
+                    while (temp.codigo < newNode.codigo && temp2.codigo < newNode.codigo) {
+                        temp = temp2;
+                        temp2 = temp2.next;
+                    }
+                    temp2.before = newNode;
+                    temp.next = newNode;
+                    newNode.next = temp2;
+                    
+                }
+            }
+            
+            deleteProducto(code){
+                let aux = this.first;
+                let value;
+                let cicleEnd = 0;
+                while(!!aux &&aux.codigo != code && cicleEnd === 0){
+                    if(aux.next === this.first){
+                        cicleEnd = 1;
+                    }
+                    aux = aux.next;
+                }
+                if (cicleEnd === 1 && aux.codigo != code){
+                    value = "No se borró ningun producto";
+                }
+                else{
+                    if(aux == this.first && aux.next == aux){
+                        
+                        this.first = null;
+                    }
+                    else if(aux == this.first){
+                        this.first.next.before = this.first.before
+                        this.first = this.first.next;
+                    }
+                    else{
+                        aux.before.next = aux.next;
+                        aux.next.before = aux.before;
+                    }
+
+                    value = "producto borrado";
+                }
+                
+                return value;
+                
+            }
+            showProductos(){
+                let line = ``;
+                let aux = this.first;
+                let i = 0;
+                while(!!aux){ //imprime todos los productos
+                    line += `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
+                        <b>Nombre :</b>${aux.name} <br>
+                        <b>Codigo :</b><a>${aux.codigo}</a> <br>
+                        <b>Costo :</b>${aux.costo} <br>
+                        <b>Cantidad :</b> ${aux.cantidad}
+                        </li></div>`;
+                    aux = aux.next;
+                    i++;
+                    }
+                return line;
+            }
+            showProductoInverso(){
+                let line = ``;
+                let aux = this.first;
+                let i = 0;
+                while(!!aux){
+                    line = `<div class= "show"> <li>  <b> Id :</b> ${Number(i) + 1} <br>
+                        <b>Nombre :</b>${aux.name} <br>
+                        <b>Codigo :</b><a>${aux.codigo}</a> <br>
+                        <b>Costo :</b>${aux.costo} <br>
+                        <b>Cantidad :</b> ${aux.cantidad}
+                        </li></div>  ${line}`;
+                        aux = aux.next;
+                        i++;
+                    }
+                return line;
+            }
+            searchProducto(code){ 
+                let aux = this.first;
+                let value;
+                while(!!aux &&aux.codigo != code){
+                    aux = aux.next;
+                }
+                value = aux;
+                return value;
+            }
+
+            
+        }
+        const inventario = new Inventario();
+        // load();
+        let i = 0;
+
+        const btnAdd = document.getElementById("add");
+        btnAdd.addEventListener("click", ()=>{
+            let name = document.getElementById("name").value;
+            let costo = document.getElementById("costo").value;
+            let cantidad = document.getElementById("cantidad").value;
+            let code = Number(document.getElementById("code").value);
+            if(!!name && !!code && !!costo && !!cantidad ){ //introduce todos los valores importantes
+                if(!!inventario.searchProducto(code)){
+                    console.log("Codigo existente")
+                }
+                else{
+                    const producto = new Producto(name,code, costo, cantidad);
+                    inventario.addProducto(producto);
+                    // save();
+                }
+                    
+            }else{
+                console.log("Dato faltante"); //NO USAR ALERTS
+            }
+        })
+    
+        const btnList = document.getElementById("list");
+        btnList.addEventListener("click",()=>{
+            document.getElementById("line").innerHTML = inventario.showProductos();
+        })
+        const btnSearch = document.getElementById("search");
+        btnSearch.addEventListener("click", ()=>{
+            let code = document.getElementById("code").value;
+            
+            console.log(inventario.searchProducto(code));
+        });
+        const btnDelete = document.getElementById("delete");
+        btnDelete.addEventListener("click",()=>{
+            let code = Number(document.getElementById("code").value);
+
+            console.log(inventario.deleteProducto(code));
+            // save();
+        });
+        const btnInverseList = document.getElementById("inverseList");
+        btnInverseList.addEventListener("click", ()=>{
+            document.getElementById("line").innerHTML = inventario.showProductoInverso();
+        });
+
+        
+        // function save(){
+        //     localStorage.setItem("inventario.productos",JSON.stringify(inventario.productos));
+        // }
+        // function load(){
+        //     if(!!localStorage.getItem("inventario.productos")){
+        //         inventario.productos = JSON.parse(localStorage.getItem("inventario.productos"));
+                
+        //     }
+        //     localStorage.clear();                                   
+        // }
+    </script>
+</body>
+</html>
