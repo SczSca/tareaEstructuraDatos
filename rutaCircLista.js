@@ -8,6 +8,7 @@ class Base {
 class Ruta{
     constructor(){
         this.first = null
+        //property that makes it easier for the methods
         this.lastadded = null
     }
 
@@ -33,6 +34,7 @@ class Ruta{
         }
         let values = [base, before]
         if (base.name == name){
+            //return two values to write less code in delete()
             return values
         }
         else{
@@ -59,14 +61,19 @@ class Ruta{
         }
         else{
             base = base[0]
+            //temp to save future changes on the hours and minutes
             let temp = []
+            //it tracks the base and time of arriving
             let track =`${base.name}: ${startHour}:${startMinute}\n`
+            //transforms start and deadline to minutes
             let totalStartMinute = startHour * 60 + startMinute
             let totalEndMinute = endHour * 60 + endMinute
             while (totalStartMinute <= totalEndMinute){                
                 base = base.next
                 totalStartMinute += base.minutes
+                //hours
                 let temp = [Math.floor(totalStartMinute / 60)]
+                //minutes
                 temp[1] = totalStartMinute - temp[0] * 60
                 track += `${base.name}: ${temp[0]}:${temp[1]}\n`
             }
